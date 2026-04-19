@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content">
+  <div class="main-area">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Détail paiement – Société</h2>
+      <a th:href="@{/paiements-publicites}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="text-muted">Société</div>
+            <div class="fs-5" th:text="${detail.societe != null ? detail.societe.nom : ''}"></div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-muted">Période</div>
+            <div class="fs-5"><span th:text="${detail.mois}"></span>/<span th:text="${detail.annee}"></span></div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-muted">% payé (global)</div>
+            <div class="fs-5" th:text="${#numbers.formatDecimal(detail.pourcentagePaye * 100, 0, 'POINT', 2, 'POINT')} + ' %'"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="text-muted">Montant total mensuel</div>
+            <div class="h4 mb-0" th:text="${#numbers.formatDecimal(detail.montantTotalMensuel, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="text-muted">Montant payé (mère)</div>
+            <div class="h4 mb-0" th:text="${#numbers.formatDecimal(detail.montantPayeMensuel, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="text-muted">Reste global</div>
+            <div class="h4 mb-0" th:text="${#numbers.formatDecimal(detail.montantTotalMensuel - detail.montantPayeMensuel, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Vol</th>
+                <th>Date</th>
+                <th class="text-end">Montant diffusion (MGA)</th>
+                <th class="text-end">% payé</th>
+                <th class="text-end">Montant payé (MGA)</th>
+                <th class="text-end">Reste (MGA)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(detail.lignes)}">
+                <td colspan="6" class="text-center text-muted">Aucune diffusion pour la période</td>
+              </tr>
+              <tr th:each="l : ${detail.lignes}">
+                <td>
+                  <span th:text="${l.aeroportDepartCode}"></span>
+                  →
+                  <span th:text="${l.aeroportArriveeCode}"></span>
+                  (<span th:text="${l.avionImmatriculation}"></span>)
+                </td>
+                <td>
+                  <span th:text="${#temporals.format(l.dateVol, 'dd/MM/yyyy')}"></span>
+                  <span th:text="${#temporals.format(l.dateVol, 'HH:mm')}"></span>
+                </td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(l.montantDiffusionVol, 0, 'POINT', 2, 'POINT')}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(l.pourcentagePaye * 100, 0, 'POINT', 2, 'POINT')} + ' %'"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(l.montantPayeVol, 0, 'POINT', 2, 'POINT')}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(l.montantResteVol, 0, 'POINT', 2, 'POINT')}"></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="4" class="text-end">Totaux</th>
+                <th class="text-end" th:text="${#numbers.formatDecimal(detail.totalPayeReparti, 0, 'POINT', 2, 'POINT')}"></th>
+                <th class="text-end" th:text="${#numbers.formatDecimal(detail.totalResteReparti, 0, 'POINT', 2, 'POINT')}"></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

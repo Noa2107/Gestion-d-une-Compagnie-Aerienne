@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Liste des Avions</h2>
+                    <a th:href="@{/avions/add}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Ajouter un Avion
+                    </a>
+                </div>
+                
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Immatriculation</th>
+                                <th>Modele</th>
+                                <th>Places Eco</th>
+                                <th>Places Premium</th>
+                                <th>Places Premiere</th>
+                                <th>Capacite Passagers</th>
+                                <th>Capacite Cargo</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(avions)}">
+                                <td colspan="9" class="text-center">Aucun avion enregistre</td>
+                            </tr>
+                            <tr th:each="avion : ${avions}">
+                                <td th:text="${avion.idAvion}"></td>
+                                <td th:text="${avion.immatriculation}"></td>
+                                <td th:text="${avion.modele}"></td>
+                                <td th:text="${avion.nbPlacesEconomique}"></td>
+                                <td th:text="${avion.nbPlacesPremium}"></td>
+                                <td th:text="${avion.nbPlacesPremiere}"></td>
+                                <td th:text="${avion.capacitePassagers}"></td>
+                                <td th:text="${avion.capaciteCargo}"></td>
+                                <td>
+                                    <a th:href="@{/avions/edit/{id}(id=${avion.idAvion})}" 
+                                       class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a th:href="@{/avions/delete/{id}(id=${avion.idAvion})}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Etes-vous sur de vouloir supprimer cet avion?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
+

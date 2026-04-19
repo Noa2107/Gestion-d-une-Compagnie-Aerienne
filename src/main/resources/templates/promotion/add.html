@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+    <div class="main-area">
+        <div class="content-card">
+            <h2>Ajouter une Promotion</h2>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <form th:action="@{/promotions/add}" th:object="${promotion}" method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Vol *</label>
+                        <select class="form-select" th:field="*{vol.idVol}" required>
+                            <option value="">Selectionnez</option>
+                            <option th:each="v : ${vols}"
+                                    th:value="${v.idVol}"
+                                    th:text="${v.idVol} + ' - ' + ${v.aeroportDepart.code} + ' -> ' + ${v.aeroportArrivee.code} + ' (' + ${#temporals.format(v.dateVol, 'dd/MM/yyyy HH:mm')} + ')'">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Classe *</label>
+                        <select class="form-select" th:field="*{classe}" required>
+                            <option value="">Selectionnez</option>
+                            <option value="Economie">Economie</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Affaires">Affaires</option>
+                            <option value="Premiere">Premiere</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Type passager *</label>
+                        <select class="form-select" th:field="*{typePassager.idTypePassager}" required>
+                            <option value="">Selectionnez</option>
+                            <option th:each="tp : ${typesPassager}"
+                                    th:value="${tp.idTypePassager}"
+                                    th:text="${tp.nomType}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Type reduction *</label>
+                        <select class="form-select" th:field="*{typeReduction}" required>
+                            <option value="">Selectionnez</option>
+                            <option value="POURCENTAGE">POURCENTAGE</option>
+                            <option value="MONTANT">MONTANT</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Valeur *</label>
+                        <input type="number" class="form-control" th:field="*{valeur}" step="0.01" min="0" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Date debut</label>
+                        <input type="datetime-local" class="form-control" th:field="*{dateDebut}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Date fin</label>
+                        <input type="datetime-local" class="form-control" th:field="*{dateFin}">
+                    </div>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" th:field="*{estActif}" id="estActif" />
+                    <label class="form-check-label" for="estActif">Actif</label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/promotions}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

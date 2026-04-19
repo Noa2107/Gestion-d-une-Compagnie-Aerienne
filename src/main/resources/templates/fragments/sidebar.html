@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<nav th:fragment="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+    <div class="sidebar-header p-3 border-bottom">
+        <div class="d-flex align-items-center">
+            <img th:src="@{/images/airline-logo.png}" alt="Airline Logo" class="sidebar-logo me-2">
+            <span class="sidebar-title">Airline</span>
+        </div>
+    </div>
+
+    <div class="sidebar-content">
+        <ul class="nav flex-column">
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/dashboard}"
+                   th:classappend="${activePage == 'dashboard'} ? ' active'">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/avions}"
+                   th:classappend="${activePage == 'avions'} ? ' active'">
+                    <i class="bi bi-airplane"></i>
+                    <span>Avions</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/avions/revenu-max}"
+                   th:classappend="${activePage == 'avions-revenu-max'} ? ' active'">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Revenu Max Avion</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/aeroports}"
+                   th:classappend="${activePage == 'aeroports'} ? ' active'">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>Aéroports</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/vols}"
+                   th:classappend="${activePage == 'vols'} ? ' active'">
+                    <i class="bi bi-calendar3"></i>
+                    <span>Vols</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/passagers}"
+                   th:classappend="${activePage == 'passagers'} ? ' active'">
+                    <i class="bi bi-people"></i>
+                    <span>Passagers</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/reservations}"
+                   th:classappend="${activePage == 'reservations'} ? ' active'">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>Réservations</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/billets}"
+                   th:classappend="${activePage == 'billets'} ? ' active'">
+                    <i class="bi bi-bag-check"></i>
+                    <span>Billets</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/tarifs}"
+                   th:classappend="${activePage == 'tarifs'} ? ' active'">
+                    <i class="bi bi-cash-coin"></i>
+                    <span>Tarifs</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/promotions}"
+                   th:classappend="${activePage == 'promotions'} ? ' active'">
+                    <i class="bi bi-percent"></i>
+                    <span>Promotions</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/chiffre-affaires}"
+                   th:classappend="${activePage == 'chiffre-affaires'} ? ' active'">
+                    <i class="bi bi-cash-stack"></i>
+                    <span>Chiffre d'Affaires</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/cargo}"
+                   th:classappend="${activePage == 'cargo'} ? ' active'">
+                    <i class="bi bi-box"></i>
+                    <span>Cargo</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/paiements}"
+                   th:classappend="${activePage == 'paiements'} ? ' active'">
+                    <i class="bi bi-credit-card"></i>
+                    <span>Paiements</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/devises}"
+                   th:classappend="${activePage == 'devises'} ? ' active'">
+                    <i class="bi bi-currency-exchange"></i>
+                    <span>Devises</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/taux-change}"
+                   th:classappend="${activePage == 'taux-change'} ? ' active'">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Taux de Change</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/publicites}"
+                   th:classappend="${activePage == 'publicites'} ? ' active'">
+                    <i class="bi bi-bullseye"></i>
+                    <span>Revenus publicitaires</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/gestion-publicites}"
+                   th:classappend="${activePage == 'gestion-publicites'} ? ' active'">
+                    <i class="bi bi-megaphone"></i>
+                    <span>Gestion des publicités</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/ca-vols}"
+                   th:classappend="${activePage == 'ca-vols'} ? ' active'">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>CA par vol</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/ca-compagnie}"
+                   th:classappend="${activePage == 'ca-compagnie'} ? ' active'">
+                    <i class="bi bi-pie-chart"></i>
+                    <span>CA Total Compagnie</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/types-produit}"
+                   th:classappend="${activePage == 'types-produit'} ? ' active'">
+                    <i class="bi bi-tags"></i>
+                    <span>Types Produit</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/produits-extra}"
+                   th:classappend="${activePage == 'produits-extra'} ? ' active'">
+                    <i class="bi bi-bag"></i>
+                    <span>Produits Extra</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:href="@{/paiements-publicites}"
+                   th:classappend="${activePage == 'paiements-publicites'} ? ' active'">
+                    <i class="bi bi-receipt"></i>
+                    <span>Paiements publicitaires</span>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</nav>
+</html>

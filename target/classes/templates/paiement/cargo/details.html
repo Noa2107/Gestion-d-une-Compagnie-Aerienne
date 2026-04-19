@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Recu de paiement</h2>
+                    <a th:href="@{/paiements/cargo}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="h4 mb-0">AIRLINE</div>
+                                <div class="text-muted">Recu de paiement - Cargo</div>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-muted">Reference Facture</div>
+                                <div class="h5" th:text="${paiement.referenceFacture}"></div>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="text-muted">Paiement ID</div>
+                                <div class="h5" th:text="${paiement.idPaiementCargo}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted">Date</div>
+                                <div class="h5" th:text="${#temporals.format(paiement.dateCreation, 'dd/MM/yyyy HH:mm')}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted">Mode</div>
+                                <div class="h5" th:text="${paiement.modePaiement}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="text-muted">Cargo</div>
+                                <div class="h5" th:text="${paiement.cargo.idCargo}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted">Type Facturation</div>
+                                <div class="h5" th:text="${paiement.typeFacturation}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="text-muted">Montant Paye</div>
+                                <div class="h5" th:text="${#numbers.formatDecimal(paiement.montantPaye, 0, 'POINT', 2, 'POINT')} + ' ' + ${paiement.devise.symbole}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted">Devise</div>
+                                <div class="h5" th:text="${paiement.devise.codeDevise}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted">Equivalent MGA</div>
+                                <div class="h5" th:text="${#numbers.formatDecimal(paiement.montantReferenceMga, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <!-- <a th:href="@{/paiements/cargo/details/{id}/pdf(id=${paiement.idPaiementCargo})}" class="btn btn-outline-dark me-2">
+                                <i class="bi bi-file-earmark-pdf"></i> Exporter PDF
+                            </a> -->
+                            <a th:href="@{/paiements/cargo/delete/{id}(id=${paiement.idPaiementCargo})}"
+                               class="btn btn-outline-danger"
+                               onclick="return confirm('Etes-vous sur de vouloir supprimer ce paiement?');">
+                                <i class="bi bi-trash"></i> Supprimer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

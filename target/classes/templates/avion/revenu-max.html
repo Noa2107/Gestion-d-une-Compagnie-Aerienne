@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+    <div class="main-area">
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Revenu maximal par avion / vol</h2>
+                <a th:href="@{/avions}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Calcul du revenu maximal (theorique)</h5>
+                    <form th:action="@{/avions/revenu-max}" method="get" class="row g-3 align-items-end">
+                        <div class="col-md-10">
+                            <label class="form-label">Vol (Avion - Vol)</label>
+                            <select class="form-select" name="idVol" required>
+                                <option value="">Selectionnez</option>
+                                <option th:each="v : ${vols}"
+                                        th:value="${v.idVol}"
+                                        th:selected="${selectedVolId != null} ? ${v.idVol == selectedVolId} : false"
+                                        th:text="${v.avion.immatriculation} + ' - ' + (${v.codeVol} ?: ${v.idVol}) + ' - ' + ${v.aeroportDepart.code} + ' -> ' + ${v.aeroportArrivee.code}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 text-end">
+                            <button type="submit" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-calculator"></i> Calculer
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-3" th:if="${revenuMax != null}">
+                        <div class="alert alert-info mb-2">
+                            Revenu maximal theorique (total):
+                            <strong th:text="${#numbers.formatDecimal(revenuMax, 0, 'POINT', 2, 'POINT')} + ' MGA'"></strong>
+                        </div>
+
+                        <div class="alert alert-light mb-0">
+                            <div>
+                                Economie:
+                                <strong th:text="${#numbers.formatDecimal(revenuEconomie, 0, 'POINT', 2, 'POINT')} + ' MGA'"></strong>
+                            </div>
+                            <div>
+                                Premium:
+                                <strong th:text="${#numbers.formatDecimal(revenuPremium, 0, 'POINT', 2, 'POINT')} + ' MGA'"></strong>
+                            </div>
+                            <div>
+                                Premiere:
+                                <strong th:text="${#numbers.formatDecimal(revenuPremiere, 0, 'POINT', 2, 'POINT')} + ' MGA'"></strong>
+                            </div>
+                        </div>
+
+                        <div class="text-muted mt-2">
+                            (Formule: nb_places_economique * tarif(Economie) + nb_places_premium * tarif(Premium) + nb_places_premiere * tarif(Premiere))
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

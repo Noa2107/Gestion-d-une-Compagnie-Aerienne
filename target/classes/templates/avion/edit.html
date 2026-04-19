@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <h2>Modifier un Avion</h2>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <form th:action="@{/avions/edit/{id}(id=${avion.idAvion})}" th:object="${avion}" method="post">
+                    <div class="mb-3">
+                        <label for="immatriculation" class="form-label">Immatriculation *</label>
+                        <input type="text" class="form-control" id="immatriculation" 
+                               th:field="*{immatriculation}" required maxlength="50"/>
+                        <div th:if="${#fields.hasErrors('immatriculation')}" 
+                             th:errors="*{immatriculation}" class="text-danger"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="modele" class="form-label">Modele</label>
+                        <input type="text" class="form-control" id="modele" 
+                               th:field="*{modele}" maxlength="50"/>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nbPlacesEconomique" class="form-label">Nb places Economique *</label>
+                            <input type="number" class="form-control" id="nbPlacesEconomique"
+                                   th:field="*{nbPlacesEconomique}" required min="0"/>
+                            <div th:if="${#fields.hasErrors('nbPlacesEconomique')}"
+                                 th:errors="*{nbPlacesEconomique}" class="text-danger"></div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="nbPlacesPremiere" class="form-label">Nb places Premiere *</label>
+                            <input type="number" class="form-control" id="nbPlacesPremiere"
+                                   th:field="*{nbPlacesPremiere}" required min="0"/>
+                            <div th:if="${#fields.hasErrors('nbPlacesPremiere')}"
+                                 th:errors="*{nbPlacesPremiere}" class="text-danger"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nbPlacesPremium" class="form-label">Nb places Premium *</label>
+                            <input type="number" class="form-control" id="nbPlacesPremium"
+                                   th:field="*{nbPlacesPremium}" required min="0"/>
+                            <div th:if="${#fields.hasErrors('nbPlacesPremium')}"
+                                 th:errors="*{nbPlacesPremium}" class="text-danger"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Capacite Passagers (auto)</label>
+                        <input type="number" class="form-control" th:value="${(avion.nbPlacesEconomique ?: 0) + (avion.nbPlacesPremium ?: 0) + (avion.nbPlacesPremiere ?: 0)}" readonly/>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="capaciteCargo" class="form-label">Capacite Cargo *</label>
+                            <input type="number" class="form-control" id="capaciteCargo" 
+                                   th:field="*{capaciteCargo}" required min="1"/>
+                            <div th:if="${#fields.hasErrors('capaciteCargo')}" 
+                                 th:errors="*{capaciteCargo}" class="text-danger"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/avions}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
+

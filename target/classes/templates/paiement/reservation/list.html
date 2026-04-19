@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Liste des Paiements Reservation</h2>
+                    <a th:href="@{/paiements/reservation/add}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Ajouter un Paiement
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Reservation</th>
+                            <th>Montant Paye</th>
+                            <th>Devise</th>
+                            <th>Montant MGA</th>
+                            <th>Mode Paiement</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(paiementsReservation)}">
+                            <td colspan="8" class="text-center">Aucun paiement reservation</td>
+                        </tr>
+                        <tr th:each="p : ${paiementsReservation}">
+                            <td th:text="${p.idPaiementReservation}"></td>
+                            <td th:text="${p.reservation.idReservation}"></td>
+                            <td th:text="${#numbers.formatDecimal(p.montantPaye, 0, 'POINT', 2, 'POINT')}"></td>
+                            <td th:text="${p.devise.codeDevise}"></td>
+                            <td th:text="${#numbers.formatDecimal(p.montantReferenceMga, 0, 'POINT', 2, 'POINT')} + ' MGA'"></td>
+                            <td th:text="${p.modePaiement}"></td>
+                            <td th:text="${#temporals.format(p.dateCreation, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <a th:href="@{/paiements/reservation/details/{id}(id=${p.idPaiementReservation})}"
+                                   class="btn btn-sm btn-outline-info me-1">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a th:href="@{/paiements/reservation/delete/{id}(id=${p.idPaiementReservation})}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Etes-vous sur de vouloir supprimer ce paiement?');">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
+

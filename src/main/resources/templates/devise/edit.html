@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <h2>Modifier une Devise</h2>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <form th:action="@{/devises/edit/{id}(id=${devise.idDevise})}" th:object="${devise}" method="post">
+                    <div class="mb-3">
+                        <label for="codeDevise" class="form-label">Code Devise *</label>
+                        <input type="text" class="form-control" id="codeDevise" 
+                               th:field="*{codeDevise}" required maxlength="10"/>
+                        <div th:if="${#fields.hasErrors('codeDevise')}" 
+                             th:errors="*{codeDevise}" class="text-danger"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="nomDevise" class="form-label">Nom Devise</label>
+                        <input type="text" class="form-control" id="nomDevise" 
+                               th:field="*{nomDevise}" maxlength="50"/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="symbole" class="form-label">Symbole</label>
+                        <input type="text" class="form-control" id="symbole" 
+                               th:field="*{symbole}" maxlength="10"/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="estReference" 
+                                   th:field="*{estReference}"/>
+                            <label class="form-check-label" for="estReference">
+                                Devise de reference (MGA)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/devises}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
+

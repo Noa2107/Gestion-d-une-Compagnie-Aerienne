@@ -1,0 +1,2 @@
+ALTER TABLE IF EXISTS reservation
+    ADD COLUMN IF NOT EXISTS sieges_attribues VARCHAR(255);

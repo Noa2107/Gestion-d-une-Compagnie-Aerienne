@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <h2>Modifier un Vol</h2>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <form th:action="@{/vols/edit/{id}(id=${vol.idVol})}" th:object="${vol}" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="codeVol" class="form-label">Code Vol (optionnel)</label>
+                            <input type="text" class="form-control" id="codeVol" th:field="*{codeVol}" maxlength="20"/>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="avion" class="form-label">Avion *</label>
+                        <select class="form-select" id="avion" th:field="*{avion.idAvion}" required>
+                            <option th:each="avion : ${avions}" 
+                                    th:value="${avion.idAvion}" 
+                                    th:selected="${avion.idAvion == vol.avion.idAvion}"
+                                    th:text="${avion.immatriculation} + ' - ' + ${avion.modele}">
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="aeroportDepart" class="form-label">Aeroport Depart *</label>
+                            <select class="form-select" id="aeroportDepart" th:field="*{aeroportDepart.idAeroport}" required>
+                                <option th:each="aeroport : ${aeroports}" 
+                                        th:value="${aeroport.idAeroport}" 
+                                        th:selected="${aeroport.idAeroport == vol.aeroportDepart.idAeroport}"
+                                        th:text="${aeroport.code} + ' - ' + ${aeroport.ville}">
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="aeroportArrivee" class="form-label">Aeroport Arrivee *</label>
+                            <select class="form-select" id="aeroportArrivee" th:field="*{aeroportArrivee.idAeroport}" required>
+                                <option th:each="aeroport : ${aeroports}" 
+                                        th:value="${aeroport.idAeroport}" 
+                                        th:selected="${aeroport.idAeroport == vol.aeroportArrivee.idAeroport}"
+                                        th:text="${aeroport.code} + ' - ' + ${aeroport.ville}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dateVol" class="form-label">Date et Heure du Vol *</label>
+                            <input type="datetime-local" class="form-control" id="dateVol" 
+                                   th:field="*{dateVol}" required/>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="dateArrivee" class="form-label">Date et Heure d'Arrivee (optionnel)</label>
+                            <input type="datetime-local" class="form-control" id="dateArrivee" 
+                                   th:field="*{dateArrivee}"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="typeVol" class="form-label">Type de Vol *</label>
+                            <select class="form-select" id="typeVol" th:field="*{typeVol}" required>
+                                <option value="PASSAGER" th:selected="${vol.typeVol == 'PASSAGER'}">Passager</option>
+                                <option value="CARGO" th:selected="${vol.typeVol == 'CARGO'}">Cargo</option>
+                                <option value="MIXTE" th:selected="${vol.typeVol == 'MIXTE'}">Mixte</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/vols}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
+

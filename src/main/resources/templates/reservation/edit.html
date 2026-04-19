@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <h2>Modifier une Reservation</h2>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <form th:action="@{/reservations/edit/{id}(id=${reservation.idReservation})}" th:object="${reservation}" method="post">
+                    <input type="hidden" id="vol" th:value="${reservation.vol != null ? reservation.vol.idVol : ''}" />
+                    <input type="hidden" id="nombrePlaces" th:field="*{nombrePlaces}" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="numeroSiege" class="form-label">Numero de Siege</label>
+                            <input type="text" class="form-control" id="numeroSiege" 
+                                   th:field="*{numeroSiege}" maxlength="10"/>
+                            <div class="form-text" th:if="${reservation.nombrePlaces != null and reservation.nombrePlaces > 1}">
+                                Reservation multi-billets: sieges attribues automatiquement.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3" th:if="${reservation.nombrePlaces != null and reservation.nombrePlaces > 1}">
+                            <label class="form-label">Sieges attribues</label>
+                            <input type="text" class="form-control" th:value="${reservation.siegesAttribues}" readonly/>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="classe" class="form-label">Classe</label>
+                            <select class="form-select" id="classe" th:field="*{classe}" required>
+                                <option value="">Selectionnez</option>
+                                <option value="Economie" th:selected="${reservation.classe == 'Economie'}">Economie</option>
+                                <option value="Premium" th:selected="${reservation.classe == 'Premium'}">Premium</option>
+                                <option value="Affaires" th:selected="${reservation.classe == 'Affaires'}">Affaires</option>
+                                <option value="Premiere" th:selected="${reservation.classe == 'Premiere'}">Premiere</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nbAdultes" class="form-label">Nb Adultes *</label>
+                            <input type="number" class="form-control" id="nbAdultes"
+                                   th:field="*{nbAdultes}" min="0" required/>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="nbEnfants" class="form-label">Nb Enfants *</label>
+                            <input type="number" class="form-control" id="nbEnfants"
+                                   th:field="*{nbEnfants}" min="0" required/>
+                            <div class="form-text">La somme doit rester egale au nombre total de places de la reservation.</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nbBebes" class="form-label">Nb Bebes *</label>
+                            <input type="number" class="form-control" id="nbBebes"
+                                   th:field="*{nbBebes}" min="0" required/>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="bagageKg" class="form-label">Bagage (kg)</label>
+                            <input type="number" class="form-control" id="bagageKg" 
+                                   th:field="*{bagageKg}" min="0"/>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="prixTotal" class="form-label">Prix Total (MGA)</label>
+                            <input type="number" class="form-control" id="prixTotal" 
+                                   th:field="*{prixTotal}" step="0.01" min="0" readonly/>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/reservations}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+    <script>
+        (function () {
+            const numeroSiegeInput = document.getElementById('numeroSiege');
+            const isMulti = /*[[${reservation.nombrePlaces != null and reservation.nombrePlaces > 1}]]*/ false;
+            if (isMulti) {
+                numeroSiegeInput.disabled = true;
+                numeroSiegeInput.value = '';
+            }
+
+            const volInput = document.getElementById('vol');
+            const classeInput = document.getElementById('classe');
+            const nbAdultesInput = document.getElementById('nbAdultes');
+            const nbEnfantsInput = document.getElementById('nbEnfants');
+            const nbBebesInput = document.getElementById('nbBebes');
+            const prixTotalInput = document.getElementById('prixTotal');
+            const nombrePlacesInput = document.getElementById('nombrePlaces');
+
+            async function refreshPrix() {
+                const idVol = volInput.value;
+                const classe = classeInput.value;
+                const nbAdultes = nbAdultesInput.value;
+                const nbEnfants = nbEnfantsInput.value;
+                const nbBebes = nbBebesInput.value;
+
+                if (!idVol || !classe) {
+                    return;
+                }
+
+                try {
+                    const url = `/reservations/prix?idVol=${encodeURIComponent(idVol)}&classe=${encodeURIComponent(classe)}&nbAdultes=${encodeURIComponent(nbAdultes || 0)}&nbEnfants=${encodeURIComponent(nbEnfants || 0)}&nbBebes=${encodeURIComponent(nbBebes || 0)}`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    if (data.error) {
+                        return;
+                    }
+                    prixTotalInput.value = data.prixTotal;
+                } catch (e) {
+                }
+            }
+
+            function syncTotalPlaces() {
+                const a = Number(nbAdultesInput.value || 0);
+                const e = Number(nbEnfantsInput.value || 0);
+                const b = Number(nbBebesInput.value || 0);
+                const total = (Number.isFinite(a) ? a : 0) + (Number.isFinite(e) ? e : 0) + (Number.isFinite(b) ? b : 0);
+                nombrePlacesInput.value = total;
+            }
+
+            function onChange() {
+                syncTotalPlaces();
+                refreshPrix();
+            }
+
+            nbAdultesInput.addEventListener('input', onChange);
+            nbEnfantsInput.addEventListener('input', onChange);
+            nbBebesInput.addEventListener('input', onChange);
+            classeInput.addEventListener('change', onChange);
+
+            syncTotalPlaces();
+            refreshPrix();
+        })();
+    </script>
+</body>
+</html>
+

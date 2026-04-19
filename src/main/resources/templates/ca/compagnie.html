@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+    <div class="main-area">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>CA Total Compagnie</h2>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <form class="row g-3 align-items-end" method="get" th:action="@{/ca-compagnie}">
+                    <div class="col-sm-3 col-md-2">
+                        <label class="form-label">Mois</label>
+                        <input type="number" min="1" max="12" placeholder="1-12" class="form-control" name="mois" th:value="${mois}">
+                    </div>
+                    <div class="col-sm-3 col-md-2">
+                        <label class="form-label">Année</label>
+                        <input type="number" min="2000" placeholder="ex: 2026" class="form-control" name="annee" th:value="${annee}">
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <label class="form-label">Avion</label>
+                        <select class="form-select" name="avionId">
+                            <option value="" th:selected="${avionId == null}">Tous</option>
+                            <option th:each="a : ${avions}" th:value="${a.idAvion}" th:text="${a.immatriculation}" th:selected="${avionId != null and avionId == a.idAvion}"></option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 col-md-3">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-calculator"></i> Calculer</button>
+                        <a th:href="@{/ca-compagnie}" class="btn btn-outline-secondary ms-1"><i class="bi bi-x-circle"></i> Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${mois == null or annee == null}" class="alert alert-info">
+            Renseignez <strong>mois</strong> et <strong>année</strong> pour afficher le CA.
+        </div>
+
+        <div th:if="${mois != null and annee != null}" class="row g-3">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-muted">CA Billets</div>
+                        <div class="h4 mb-0" th:text="${#numbers.formatDecimal(caBillets, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-muted">CA Publicités</div>
+                        <div class="h4 mb-0" th:text="${#numbers.formatDecimal(caPublicites, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-muted">CA Produits Extra</div>
+                        <div class="h4 mb-0" th:text="${#numbers.formatDecimal(caProduitsExtraTheorique, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-muted">CA Total</div>
+                        <div class="h4 mb-0" th:text="${#numbers.formatDecimal(caTotal, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${mois != null and annee != null}" class="row g-3 mt-1">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-muted">Payé pubs</div>
+                        <div class="h5 mb-0" th:text="${#numbers.formatDecimal(montantPayePublicites, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-muted">Reste à payer pubs</div>
+                        <div class="h5 mb-0" th:text="${#numbers.formatDecimal(resteAPayerPublicites, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${mois != null and annee != null}" class="card mt-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="h6 mb-0">Détail vols</div>
+                    <!-- <a class="btn btn-sm btn-outline-primary" th:href="@{/ca-vols(mois=${mois}, annee=${annee}, avionId=${avionId})}">Voir CA par vol</a> -->
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Départ</th>
+                            <th>Arrivée</th>
+                            <th>Avion</th>
+                            <th>Date</th>
+                            <th class="text-end">Billets</th>
+                            <th class="text-end">Publicités</th>
+                            <th class="text-end">Total vol</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(vols)}">
+                            <td colspan="7" class="text-center text-muted">Aucun vol sur la période</td>
+                        </tr>
+                        <tr th:each="v : ${vols}">
+                            <td th:text="${v.aeroportDepartCode}"></td>
+                            <td th:text="${v.aeroportArriveeCode}"></td>
+                            <td th:text="${v.avionImmatriculation}"></td>
+                            <td th:text="${#temporals.format(v.dateVol, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td class="text-end" th:text="${#numbers.formatDecimal(v.caBillets, 0, 'POINT', 2, 'POINT')}"></td>
+                            <td class="text-end" th:text="${#numbers.formatDecimal(v.caPublicites, 0, 'POINT', 2, 'POINT')}"></td>
+                            <td class="text-end" th:text="${#numbers.formatDecimal(v.caTotal, 0, 'POINT', 2, 'POINT')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Dashboard</h2>
+                <div>
+                    <a th:href="@{/dashboard(days=7)}" class="btn btn-sm btn-outline-secondary me-2">7 jours</a>
+                    <a th:href="@{/dashboard(days=14)}" class="btn btn-sm btn-outline-secondary me-2">14 jours</a>
+                    <a th:href="@{/dashboard(days=30)}" class="btn btn-sm btn-outline-secondary">30 jours</a>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="text-muted">Chiffre d'affaire (Total)</div>
+                                    <div class="h4" th:text="${#numbers.formatDecimal(kpiCaTotal, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                                </div>
+                                <div class="text-primary h3"><i class="bi bi-cash-stack"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="text-muted">Chiffre d'affaire (Aujourd'hui)</div>
+                                    <div class="h4" th:text="${#numbers.formatDecimal(kpiCaToday, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                                </div>
+                                <div class="text-success h3"><i class="bi bi-graph-up"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="text-muted">Chiffre d'affaire (Ce mois)</div>
+                                    <div class="h4" th:text="${#numbers.formatDecimal(kpiCaMonth, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                                </div>
+                                <div class="text-warning h3"><i class="bi bi-calendar-week"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="text-muted">Paiements</div>
+                                    <div class="h4" th:text="${kpiPaymentsCount}"></div>
+                                </div>
+                                <div class="text-info h3"><i class="bi bi-credit-card"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="text-muted">Reservations</div>
+                                    <div class="h4" th:text="${kpiReservationsCount}"></div>
+                                </div>
+                                <div class="text-primary h3"><i class="bi bi-ticket-perforated"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="text-muted">Vols</div>
+                                    <div class="h4" th:text="${kpiVolsCount}"></div>
+                                </div>
+                                <div class="text-secondary h3"><i class="bi bi-airplane"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Chiffre d'affaire (MGA) par jour</h5>
+                            <canvas id="caChart" height="110"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Repartition CA par devise</h5>
+                            <canvas id="deviseChart" height="110"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Nombre de paiements par jour</h5>
+                            <canvas id="countChart" height="110"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Top vols (CA reservation)</h5>
+                            <canvas id="topVolChart" height="110"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Derniers paiements</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>ID</th>
+                                    <th>Reference</th>
+                                    <th>Devise</th>
+                                    <th>Montant (MGA)</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(lastPayments)}">
+                                    <td colspan="6" class="text-center">Aucun paiement</td>
+                                </tr>
+                                <tr th:each="p : ${lastPayments}">
+                                    <td th:text="${p.type}"></td>
+                                    <td th:text="${p.id}"></td>
+                                    <td th:text="${p.ref}"></td>
+                                    <td th:text="${p.devise}"></td>
+                                    <td th:text="${#numbers.formatDecimal(p.mga, 0, 'POINT', 2, 'POINT')} + ' MGA'"></td>
+                                    <td th:text="${p.date != null ? #temporals.format(p.date, 'dd/MM/yyyy HH:mm') : ''}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+    <script th:inline="javascript">
+        const labels = /*[[${labels}]]*/ [];
+        const seriesCA = /*[[${seriesCA}]]*/ [];
+        const seriesCount = /*[[${seriesCount}]]*/ [];
+        const deviseLabels = /*[[${deviseLabels}]]*/ [];
+        const deviseSeries = /*[[${deviseSeries}]]*/ [];
+        const topVolLabels = /*[[${topVolLabels}]]*/ [];
+        const topVolSeries = /*[[${topVolSeries}]]*/ [];
+
+        const ctxCA = document.getElementById('caChart');
+        if (ctxCA) {
+            new Chart(ctxCA, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'CA (MGA)',
+                        data: seriesCA,
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13,110,253,0.15)',
+                        fill: true,
+                        tension: 0.25
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        const ctxCount = document.getElementById('countChart');
+        if (ctxCount) {
+            new Chart(ctxCount, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nombre de paiements',
+                        data: seriesCount,
+                        backgroundColor: 'rgba(25,135,84,0.6)',
+                        borderColor: '#198754'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        const ctxDevise = document.getElementById('deviseChart');
+        if (ctxDevise) {
+            new Chart(ctxDevise, {
+                type: 'doughnut',
+                data: {
+                    labels: deviseLabels,
+                    datasets: [{
+                        label: 'CA par devise',
+                        data: deviseSeries
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        const ctxTopVol = document.getElementById('topVolChart');
+        if (ctxTopVol) {
+            new Chart(ctxTopVol, {
+                type: 'bar',
+                data: {
+                    labels: topVolLabels,
+                    datasets: [{
+                        label: 'CA (MGA)',
+                        data: topVolSeries,
+                        backgroundColor: 'rgba(255,193,7,0.7)',
+                        borderColor: '#ffc107'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: { legend: { display: true } },
+                    scales: { x: { beginAtZero: true } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

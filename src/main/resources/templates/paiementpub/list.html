@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content">
+  <div class="main-area">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Paiements publicitaires</h2>
+      <a th:href="@{/paiements-publicites/add}" class="btn btn-primary btn-sm"><i class="bi bi-plus"></i> Nouveau paiement</a>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Société</th>
+                <th>Période</th>
+                <th>Date paiement</th>
+                <th class="text-end">Montant (MGA)</th>
+                <th>Référence</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(paiements)}">
+                <td colspan="7" class="text-center">Aucun paiement</td>
+              </tr>
+              <tr th:each="p : ${paiements}">
+                <td th:text="${p.id}"></td>
+                <td th:text="${p.societe != null ? p.societe.nom : ''}"></td>
+                <td th:text="${p.mois} + '/' + ${p.annee}"></td>
+                <td th:text="${#temporals.format(p.datePaiement, 'dd/MM/yyyy')}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(p.montant, 0, 'POINT', 2, 'POINT')}"></td>
+                <td th:text="${p.reference}"></td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-primary me-1" th:href="@{/paiements-publicites/detail(societeId=${p.societe != null ? p.societe.idSociete : 0}, mois=${p.mois}, annee=${p.annee})}"><i class="bi bi-list-task"></i> Détail</a>
+                  <a class="btn btn-sm btn-outline-secondary" th:href="@{/paiements-publicites/edit/{id}(id=${p.id})}"><i class="bi bi-pencil"></i></a>
+                  <form th:action="@{/paiements-publicites/delete/{id}(id=${p.id})}" method="post" class="d-inline" onsubmit="return confirm('Supprimer ce paiement ?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <h2>Modifier un Passager</h2>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <form th:action="@{/passagers/edit/{id}(id=${passager.idPassager})}" th:object="${passager}" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nom" class="form-label">Nom *</label>
+                            <input type="text" class="form-control" id="nom" 
+                                   th:field="*{nom}" required maxlength="100"/>
+                            <div th:if="${#fields.hasErrors('nom')}" 
+                                 th:errors="*{nom}" class="text-danger"></div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="prenom" class="form-label">Prenom *</label>
+                            <input type="text" class="form-control" id="prenom" 
+                                   th:field="*{prenom}" required maxlength="100"/>
+                            <div th:if="${#fields.hasErrors('prenom')}" 
+                                 th:errors="*{prenom}" class="text-danger"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dateNaissance" class="form-label">Date de Naissance</label>
+                            <input type="date" class="form-control" id="dateNaissance" 
+                                   th:field="*{dateNaissance}"/>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="sexe" class="form-label">Sexe</label>
+                            <select class="form-select" id="sexe" th:field="*{sexe}">
+                                <option value="">Selectionnez</option>
+                                <option value="M">Masculin</option>
+                                <option value="F">Feminin</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="nationalite" class="form-label">Nationalite</label>
+                        <input type="text" class="form-control" id="nationalite" 
+                               th:field="*{nationalite}" maxlength="50"/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="numeroPasseport" class="form-label">Numero de Passeport</label>
+                        <input type="text" class="form-control" id="numeroPasseport" 
+                               th:field="*{numeroPasseport}" maxlength="50"/>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" 
+                                   th:field="*{email}" maxlength="100"/>
+                            <div th:if="${#fields.hasErrors('email')}" 
+                                 th:errors="*{email}" class="text-danger"></div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="contact" class="form-label">Contact</label>
+                            <input type="text" class="form-control" id="contact" 
+                                   th:field="*{contact}" maxlength="50"/>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/passagers}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
+

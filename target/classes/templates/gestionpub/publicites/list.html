@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content">
+  <div class="main-area">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Publicités</h2>
+      <a th:href="@{/gestion-publicites/publicites/add}" class="btn btn-primary btn-sm"><i class="bi bi-plus"></i> Nouvelle publicité</a>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Société</th>
+                <th>Période</th>
+                <th class="text-end">Diffusions</th>
+                <th class="text-end">Prix unitaire (MGA)</th>
+                <th class="text-end">CA (MGA)</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(publicites)}">
+                <td colspan="7" class="text-center">Aucune publicité</td>
+              </tr>
+              <tr th:each="p : ${publicites}">
+                <td th:text="${p.idPublicite}"></td>
+                <td th:text="${p.societe != null ? p.societe.nom : ''}"></td>
+                <td th:text="${p.mois} + '/' + ${p.annee}"></td>
+                <td class="text-end" th:text="${p.nombreDiffusions}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(p.prixUnitaire, 0, 'POINT', 2, 'POINT')}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(p.ca, 0, 'POINT', 2, 'POINT')}"></td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-secondary" th:href="@{/gestion-publicites/publicites/edit/{id}(id=${p.idPublicite})}"><i class="bi bi-pencil"></i></a>
+                  <form th:action="@{/gestion-publicites/publicites/delete/{id}(id=${p.idPublicite})}" method="post" class="d-inline" onsubmit="return confirm('Supprimer cette publicité ?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

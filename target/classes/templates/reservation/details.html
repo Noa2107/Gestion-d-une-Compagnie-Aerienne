@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content">
+        <div class="main-area">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Billet d'avion</h2>
+                    <a th:href="@{/reservations}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                </div>
+
+                <div class="alert alert-info" th:if="${reservation.nombrePlaces != null and reservation.nombrePlaces > 1}">
+                    Cette reservation contient plusieurs billets (1 billet par siege). Un meme passager est associe a la reservation actuellement.
+                </div>
+
+                <div class="alert alert-light" th:if="${reservation.nbAdultes != null or reservation.nbEnfants != null or reservation.nbBebes != null}">
+                    <strong>Repartition:</strong>
+                    <span th:text="'Adultes: ' + ${(reservation.nbAdultes != null ? reservation.nbAdultes : 0)}"></span>
+                    <span class="ms-2" th:text="'Enfants: ' + ${(reservation.nbEnfants != null ? reservation.nbEnfants : 0)}"></span>
+                    <span class="ms-2" th:text="'Bebes: ' + ${(reservation.nbBebes != null ? reservation.nbBebes : 0)}"></span>
+                </div>
+
+                <div th:if="${#lists.isEmpty(seatList)}" class="alert alert-warning">
+                    Aucun siege trouve pour cette reservation.
+                </div>
+
+                <div th:each="seat,iter : ${seatList}" class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="text-muted">PASSENGER</div>
+                                <div class="h4 mb-0" th:text="${seatAssignments[#strings.toUpperCase(seat)]?.passager != null} ? ${seatAssignments[#strings.toUpperCase(seat)].passager.nom} + ' ' + ${seatAssignments[#strings.toUpperCase(seat)].passager.prenom} : ${reservation.passager.nom} + ' ' + ${reservation.passager.prenom}"></div>
+                                <div class="text-muted">PNR: <span th:text="${pnr}"></span></div>
+                            </div>
+                            <div class="text-end">
+                                <div class="h4 mb-0">Airline</div>
+                                <div class="text-muted">Boarding Pass</div>
+                                <div class="text-muted" th:text="'Ticket ' + ${iter.index + 1} + '/' + ${seatList.size()}"></div>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="text-muted">ITINERARY</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="text-muted">De</div>
+                                <div class="h4" th:text="${reservation.vol.aeroportDepart.code}"></div>
+                                <div class="text-muted" th:text="${reservation.vol.aeroportDepart.ville} + ', ' + ${reservation.vol.aeroportDepart.pays}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted">Vers</div>
+                                <div class="h4" th:text="${reservation.vol.aeroportArrivee.code}"></div>
+                                <div class="text-muted" th:text="${reservation.vol.aeroportArrivee.ville} + ', ' + ${reservation.vol.aeroportArrivee.pays}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="text-muted">Vol</div>
+                                <div class="h5" th:text="${reservation.vol.codeVol != null and !reservation.vol.codeVol.isBlank()} ? ${reservation.vol.codeVol} : ${reservation.vol.idVol}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted">Classe</div>
+                                <div class="h5" th:text="${reservation.classe}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted">Siege</div>
+                                <div class="h5" th:text="${seat}"></div>
+                            </div>
+
+                            <div class="col-md-12" th:if="${seatAssignments[#strings.toUpperCase(seat)] == null}">
+                                <div class="text-muted">Affecter un passager a ce billet</div>
+                                <form th:action="@{/reservations/details/{id}/assign-passager(id=${reservation.idReservation})}" method="post" class="row g-2 align-items-end">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Passager</label>
+                                        <select class="form-select" name="idPassager" required>
+                                            <option value="">Selectionnez</option>
+                                            <option th:each="p : ${passagers}" th:value="${p.idPassager}" th:text="${p.nom} + ' ' + ${p.prenom}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Siege</label>
+                                        <input class="form-control" name="siege" th:value="${seat}" readonly />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-primary w-100">Associer</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="text-muted">Depart</div>
+                                <div class="h5" th:text="${#temporals.format(reservation.vol.dateVol, 'dd/MM/yyyy HH:mm')}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted">Arrivee</div>
+                                <div class="h5" th:text="${reservation.vol.dateArrivee != null} ? ${#temporals.format(reservation.vol.dateArrivee, 'dd/MM/yyyy HH:mm')} : ''"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="text-muted">Bagage (kg)</div>
+                                <div class="h5" th:text="${reservation.bagageKg}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted" th:text="${reservation.nombrePlaces != null and reservation.nombrePlaces > 1} ? 'Prix par billet' : 'Prix billet'"></div>
+                                <div class="h5" th:text="${#numbers.formatDecimal(prixParBillet, 0, 'POINT', 2, 'POINT')} + ' MGA'"></div>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="text-center text-muted">Vol effectue par Airline Company</div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <!-- <a th:href="@{/reservations/details/{id}/pdf(id=${reservation.idReservation})}" class="btn btn-outline-dark me-2">
+                        <i class="bi bi-file-earmark-pdf"></i> Exporter PDF
+                    </a> -->
+                    <a th:href="@{/reservations/edit/{id}(id=${reservation.idReservation})}" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-pencil"></i> Modifier
+                    </a>
+                    <a th:href="@{/reservations/delete/{id}(id=${reservation.idReservation})}"
+                       class="btn btn-outline-danger"
+                       onclick="return confirm('Etes-vous sur de vouloir supprimer cette reservation?');">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content">
+  <div class="main-area">
+    <h2>Nouveau paiement publicitaire</h2>
+    <div class="card mt-2">
+      <div class="card-body">
+        <form th:action="@{/paiements-publicites/add}" th:object="${paiement}" method="post" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Société</label>
+            <select class="form-select" name="societeId" required>
+              <option value="" disabled selected>-- Choisir --</option>
+              <option th:each="s : ${societes}" th:value="${s.idSociete}" th:text="${s.nom}"></option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Mois</label>
+            <input type="number" min="1" max="12" class="form-control" th:field="*{mois}" required />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Année</label>
+            <input type="number" min="2000" class="form-control" th:field="*{annee}" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Date de paiement</label>
+            <input type="date" name="date" class="form-control" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Montant (MGA)</label>
+            <input type="number" step="0.01" min="0" class="form-control" th:field="*{montant}" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Référence</label>
+            <input type="text" th:field="*{reference}" class="form-control" />
+          </div>
+          <div class="col-12">
+            <a th:href="@{/paiements-publicites}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
